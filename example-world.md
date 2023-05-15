@@ -803,6 +803,20 @@ not reuse it thereafter.
 directory, named pipe, special file, or other object on which filesystem
 calls may be made.
 <p>This <a href="https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Resources">represents a resource</a>.</p>
+<h4><a name="metadata_hash_value"><code>record metadata-hash-value</code></a></h4>
+<p>A 128-bit hash value, split into parts because wasm doesn't have a
+128-bit integer type.</p>
+<h5>Record Fields</h5>
+<ul>
+<li>
+<p><a name="metadata_hash_value.lower"><code>lower</code></a>: <code>u64</code></p>
+<p>64 bits of a 128-bit hash value.
+</li>
+<li>
+<p><a name="metadata_hash_value.upper"><code>upper</code></a>: <code>u64</code></p>
+<p>Another 64 bits of a 128-bit hash value.
+</li>
+</ul>
 <h4><a name="directory_entry_stream"><code>type directory-entry-stream</code></a></h4>
 <p><code>u32</code></p>
 <p>A stream of directory entries.
@@ -810,7 +824,7 @@ calls may be made.
 <hr />
 <h3>Functions</h3>
 <h4><a name="read_via_stream"><code>read-via-stream: func</code></a></h4>
-<p>Return a stream for reading from a file, if available.</p>
+<p>Return a stream for reading from a file.</p>
 <p>May fail with an error-code describing why the file cannot be read.</p>
 <p>Multiple read, write, and append streams may be active on the same open
 file and they do not interfere with each other.</p>
@@ -1403,7 +1417,7 @@ computed hash.</li>
 <p>However, none of these is required.</p>
 <h5>Return values</h5>
 <ul>
-<li><a name="metadata_hash.0"></a> result&lt;(<code>u64</code>, <code>u64</code>), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="metadata_hash.0"></a> result&lt;<a href="#metadata_hash_value"><a href="#metadata_hash_value"><code>metadata-hash-value</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="metadata_hash_at"><code>metadata-hash-at: func</code></a></h4>
 <p>Return a hash of the metadata associated with a filesystem object referred
@@ -1416,7 +1430,7 @@ to by a directory descriptor and a relative path.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="metadata_hash_at.0"></a> result&lt;(<code>u64</code>, <code>u64</code>), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="metadata_hash_at.0"></a> result&lt;<a href="#metadata_hash_value"><a href="#metadata_hash_value"><code>metadata-hash-value</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:filesystem_preopens">Import interface wasi:filesystem/preopens</a></h2>
 <hr />
