@@ -292,15 +292,6 @@ interface types {
     /// This [represents a resource](https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Resources).
     type descriptor = u32
 
-    /// A 128-bit hash value, split into parts because wasm doesn't have a
-    /// 128-bit integer type.
-    record metadata-hash-value {
-       /// 64 bits of a 128-bit hash value.
-       lower: u64,
-       /// Another 64 bits of a 128-bit hash value.
-       upper: u64,
-    }
-
     /// Return a stream for reading from a file, if available.
     ///
     /// May fail with an error-code describing why the file cannot be read.
@@ -476,9 +467,7 @@ interface types {
     ///
     /// Note: This is similar to `fstat` in POSIX, except that it does not return
     /// device and inode information. For testing whether two descriptors refer to
-    /// the same underlying filesystem object, use `is-same-object`. To obtain
-    /// additional data that can be used do determine whether a file has been
-    /// modified, use `metadata-hash`.
+    /// the same underlying filesystem object, use `is-same-object`.
     ///
     /// Note: This was called `fd_filestat_get` in earlier versions of WASI.
     stat: func(this: descriptor) -> result<descriptor-stat, error-code>
@@ -803,36 +792,4 @@ interface types {
     /// wasi-filesystem does not expose device and inode numbers, so this function
     /// may be used instead.
     is-same-object: func(other: descriptor) -> bool
-
-    /// Return a hash of the metadata associated with a filesystem object referred
-    /// to by a descriptor.
-    ///
-    /// This returns a hash of the last-modification timestamp and file size, and
-    /// may also include the inode number, device number, birth timestamp, and
-    /// other metadata fields that may change when the file is modified or
-    /// replaced. It may also include a secret value chosen by the
-    /// implementation and not otherwise exposed.
-    ///
-    /// Implementations are encourated to provide the following properties:
-    ///
-    ///  - If the file is not modified or replaced, the computed hash value should
-    ///    usually not change.
-    ///  - If the object is modified or replaced, the computed hash value should
-    ///    usually change.
-    ///  - The inputs to the hash should not be easily computable from the
-    ///    computed hash.
-    ///
-    /// However, none of these is required.
-    metadata-hash: func() -> result<metadata-hash-value, error-code>
-
-    /// Return a hash of the metadata associated with a filesystem object referred
-    /// to by a directory descriptor and a relative path.
-    ///
-    /// This performs the same hash computation as `metadata-hash`.
-    metadata-hash-at: func(
-        /// Flags determining the method of how the path is resolved.
-        path-flags: path-flags,
-        /// The relative path of the file or directory to inspect.
-        path: string,
-    ) -> result<metadata-hash-value, error-code>
 }
